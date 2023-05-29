@@ -217,6 +217,39 @@ paths:
       - cookieAuth: []
 
   
+
+  /recipes:
+    post:
+      tags:
+        - Recipes
+      summary: Create a new recipe
+      description: Create a new recipe with the provided recipe ID
+      # parameters:
+      #   - name: recipeId
+      #     in: path
+      #     description: Recipe's ID
+      #     required: true
+      #     schema:
+      #       type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeInput'
+      responses:
+        '200':
+          description: Recipe created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+        '400':
+          description: Invalid request payload
+        '500':
+          description: Internal server error
+
+
   /recipes/{recipeId}:
     get:
       tags:
@@ -283,6 +316,65 @@ components:
         #   description: URL for the user's image
         #   example: https://cloudinary.com/
       description: Model containing user info
+    Recipe:
+      type: object
+      properties:
+        recipe_id:
+          type: integer
+          description: Recipe identifier
+        title:
+          type: string
+          description: Recipe title
+        image:
+          type: string
+          description: Recipe image URL
+        readyInMinutes:
+          type: integer
+          description: Time required to make the recipe
+        popularity:
+          type: integer
+          description: Recipe popularity
+        vegetarian:
+          type: boolean
+          description: Indicates if the recipe is vegetarian
+        vegan:
+          type: boolean
+          description: Indicates if the recipe is vegan
+        glutenFree:
+          type: boolean
+          description: Indicates if the recipe is gluten-free
+    RecipeInput:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Recipe title
+        image:
+          type: string
+          description: Recipe image URL
+        readyInMinutes:
+          type: integer
+          description: Time required to make the recipe
+        popularity:
+          type: integer
+          description: Recipe popularity
+        vegetarian:
+          type: boolean
+          description: Indicates if the recipe is vegetarian
+        vegan:
+          type: boolean
+          description: Indicates if the recipe is vegan
+        glutenFree:
+          type: boolean
+          description: Indicates if the recipe is gluten-free
+      required:
+        - title
+        - image
+        - readyInMinutes
+        - popularity
+        - vegetarian
+        - vegan
+        - glutenFree
     LoginScheme:
       type: object
       properties:
