@@ -33,6 +33,10 @@ paths:
       responses:
         "201":
           description: A new user has been added
+          content:
+            application/json:
+              example:
+                message: User registered successfully
         "400":
           description: wrong input parameters
   /login:
@@ -184,7 +188,7 @@ paths:
         Retrieves the  3 recipes viewed by the logged-in user. If the user is not logged in, provides an option to log in using the website registration button.
       responses:
         '200':
-          description: OK
+          description: OK - Retrieves the 3 recipes viewed by the logged-in user. If the user is not logged in, provides an option to log in using the website registration button.
           content:
             application/json:
               schema:
@@ -244,6 +248,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recipe'
+              example:
+                recipe_id: 123
+                title: Sample Recipe
+                image: https://example.com/recipe.jpg
+                readyInMinutes: 30
+                popularity: 100
+                vegetarian: true
+                vegan: false
+                glutenFree: true
         '400':
           description: Invalid request payload
         '500':
@@ -265,6 +278,7 @@ paths:
         explode: false
         schema:
           type: integer
+        example: 716429
       responses:
         "200":
           description: data about the recipe
