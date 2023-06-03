@@ -17,8 +17,14 @@ exports.getFavoriteRecipes = getFavoriteRecipes;
 
 //  ADDING A NEW MY RECIPE
 
-async function addNewRecipe(user_id, recipe_name, recipe_category, recipe_ingredients, recipe_instructions, recipe_image){
-    await DButils.execQuery(`insert into recipes values ('${user_id}', '${recipe_name}', '${recipe_category}', '${recipe_ingredients}', '${recipe_instructions}', '${recipe_image}')`);
+async function addNewRecipe(user_id, recipeDetails){ // recipeDetails is an object
+    await DButils.execQuery(`insert into recipes (user_id, recipe_id, title, image, readyInMinutes, popularity,
+        vegetarian, vegan, glutenFree, IngredientsAndAmount, instructions, servings)
+     values ('${user_id}', '${recipeDetails.recipe_id}', '${recipeDetails.title}',
+     '${recipeDetails.image}', '${recipeDetails.readyInMinutes}', '${recipeDetails.popularity}', '${recipeDetails.vegetarian}',
+     '${recipeDetails.vegan}', '${recipeDetails.glutenFree}', '${recipeDetails.IngredientsAndAmount}',
+     '${recipeDetails.instructions}', '${recipeDetails.servings}'
+     )`);
 }
 
 exports.addNewRecipe = addNewRecipe;
