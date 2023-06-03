@@ -1,15 +1,10 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 const DButils = require("./DButils");
-
-
-
 /**
  * Get recipes list from spooncular response and extract the relevant recipe data for preview
  * @param {*} recipes_info 
  */
-
-
 async function getRecipeInformation(recipe_id) {
     return await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
@@ -19,6 +14,7 @@ async function getRecipeInformation(recipe_id) {
     });
 }
 exports.getRecipeInformation = getRecipeInformation;
+
 
 
 async function getRecipeDetails(recipe_id) {
@@ -58,6 +54,7 @@ async function getMyRecipeInformation(recipe_id_to_check) {
 exports.getMyRecipeInformation = getMyRecipeInformation;
 
 
+
 async function getMyRecipeDetails(recipe_id) {
     try {
       const recipeDetails = [];
@@ -87,12 +84,12 @@ exports.getFamilyInformation = getFamilyInformation;
 async function getFamilyRecipeDetails(recipe_id) {
     try {
       const recipeDetails = [];
-  
+
       for (const oneID of recipe_id) {
         const recipeInfo = await getFamilyInformation(oneID);
         recipeDetails.push(recipeInfo);
       }
-  
+
       return recipeDetails;
     } catch (error) {
       throw error;
