@@ -1,8 +1,23 @@
 
 const DButils = require("./DButils");
+const recipes_utils = require("./recipes_utils");
+
+
+
+// async function markAsFavorite(user_id, recipe_id){
+//     await DButils.execQuery(`insert into favoriterecipes values ('${user_id}',${recipe_id})`);
+// }
+
 async function markAsFavorite(user_id, recipe_id){
-    await DButils.execQuery(`insert into favoriterecipes values ('${user_id}',${recipe_id})`);
+    // check if the recipe is already in the favorite list of API
+       try{       
+        const recipe = await recipes_utils.getRecipeInformation(recipe_id);
+        await DButils.execQuery(`insert into favoriterecipes values ('${user_id}',${recipe_id})`);
+       }catch(error){
+        throw new Error('Failed to mark recipe as favorite: ' + error.message);
+      }
 }
+
 async function getFavoriteRecipes(user_id){
     const recipes_id = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}'`);
     return recipes_id;
