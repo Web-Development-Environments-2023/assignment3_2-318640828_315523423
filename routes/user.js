@@ -53,7 +53,9 @@ router.get('/favorites', async (req,res,next) => {
 });
 
 
-
+/**
+ * This path returns the recipes that were upload by the logged-in user
+ */
 router.get('/MyRecipes', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -68,6 +70,9 @@ router.get('/MyRecipes', async (req,res,next) => {
   }
 });
 
+/**
+ * This path gets body with recipeId and save this recipe in the list with logged-in userID
+ */
 router.post('/MyRecipes', async (req, res, next) => {
   try {
     const user_id = req.session.user_id;
@@ -96,8 +101,9 @@ router.post('/MyRecipes', async (req, res, next) => {
 });
 
 
-
-
+/**
+ * This path returns the family recipes that were of the logged-in user
+ */
 router.get('/MyFamilyRecipes', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
@@ -105,7 +111,7 @@ router.get('/MyFamilyRecipes', async (req,res,next) => {
     const recipes_id = await user_utils.getMyFamilyRecipes(user_id);
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-    const results = await recipe_utils.getRecipeDetails(recipes_id_array);
+    const results = await recipe_utils.getFamilyRecipeDetails(recipes_id_array);
     res.status(200).send(results);
   }
   catch(error){
@@ -113,22 +119,22 @@ router.get('/MyFamilyRecipes', async (req,res,next) => {
   }
 });
 
-router.post('/MyFamilyRecipes', async (req,res,next) => {
-  try{
-    const user_id = req.session.user_id;
-    const recipe_name = req.body.recipeName;
-    const recipe_category = req.body.recipeCategory;
-    const recipe_ingredients = req.body.recipeIngredients;
-    const recipe_instructions = req.body.recipeInstructions;
-    const recipe_image = req.body.recipeImage;
-    await user_utils.addNewFamilyRecipe(user_id, recipe_name, recipe_category, recipe_ingredients, recipe_instructions, recipe_image);
-    res.status(200).send("The Recipe successfully saved as favorite");
-  }
-  catch(error){
-    next(error);
-  }
-});
 
+// router.post('/MyFamilyRecipes', async (req,res,next) => {
+//   try{
+//     const user_id = req.session.user_id;
+//     const recipe_name = req.body.recipeName;
+//     const recipe_category = req.body.recipeCategory;
+//     const recipe_ingredients = req.body.recipeIngredients;
+//     const recipe_instructions = req.body.recipeInstructions;
+//     const recipe_image = req.body.recipeImage;
+//     await user_utils.addNewFamilyRecipe(user_id, recipe_name, recipe_category, recipe_ingredients, recipe_instructions, recipe_image);
+//     res.status(200).send("The Recipe successfully saved as favorite");
+//   }
+//   catch(error){
+//     next(error);
+//   }
+// });
 
 
 

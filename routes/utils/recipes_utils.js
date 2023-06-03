@@ -21,7 +21,6 @@ async function getRecipeInformation(recipe_id) {
 exports.getRecipeInformation = getRecipeInformation;
 
 
-
 async function getRecipeDetails(recipe_id) {
     try {
       const recipeDetails = [];
@@ -51,12 +50,12 @@ exports.getRecipeDetails = getRecipeDetails;
 
 
 
+
 async function getMyRecipeInformation(recipe_id_to_check) {
     const recipes_info = await DButils.execQuery(`select title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree from recipes where recipe_id='${recipe_id_to_check}'`);
     return recipes_info;
 }
 exports.getMyRecipeInformation = getMyRecipeInformation;
-
 
 
 async function getMyRecipeDetails(recipe_id) {
@@ -76,3 +75,27 @@ async function getMyRecipeDetails(recipe_id) {
 exports.getMyRecipeDetails = getMyRecipeDetails;
 
 
+
+
+async function getFamilyInformation(recipe_id_to_check) {
+    const recipes_info = await DButils.execQuery(`select recipe_id, owner, cookingTime, ingridients, instructions from myfamilyrecipes where recipe_id='${recipe_id_to_check}'`);
+    return recipes_info;
+}
+exports.getFamilyInformation = getFamilyInformation;
+
+
+async function getFamilyRecipeDetails(recipe_id) {
+    try {
+      const recipeDetails = [];
+  
+      for (const oneID of recipe_id) {
+        const recipeInfo = await getFamilyInformation(oneID);
+        recipeDetails.push(recipeInfo);
+      }
+  
+      return recipeDetails;
+    } catch (error) {
+      throw error;
+    }
+  }
+  exports.getFamilyRecipeDetails = getFamilyRecipeDetails;

@@ -9,7 +9,6 @@ async function getFavoriteRecipes(user_id){
     return recipes_id;
 }
 
-
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 
@@ -40,15 +39,15 @@ exports.getMyRecipes = getMyRecipes;
 // GETTING MY FAMILY RECIPES
 
 async function getMyFamilyRecipes(user_id){
-    const recipes_id = await DButils.execQuery(`select recipe_id from FamilyRecipes where user_id='${user_id}'`);
+    const recipes_id = await DButils.execQuery(`select recipe_id from myfamilyrecipes where user_id='${user_id}'`);
     return recipes_id;
 }
 exports.getMyFamilyRecipes = getMyFamilyRecipes;
 
 // ADDING A NEW FAMILY RECIPE
 
-async function addNewFamilyRecipe(user_id, recipe_name, recipe_category, recipe_ingredients, recipe_instructions, recipe_image){
-    await DButils.execQuery(`insert into FamilyRecipes values ('${user_id}', '${recipe_name}', '${recipe_category}', '${recipe_ingredients}', '${recipe_instructions}', '${recipe_image}')`);
-}
-exports.addNewFamilyRecipe = addNewFamilyRecipe;
+// async function addNewFamilyRecipe(user_id, recipe_name, recipe_category, recipe_ingredients, recipe_instructions, recipe_image){
+//     await DButils.execQuery(`insert into FamilyRecipes values ('${user_id}', '${recipe_name}', '${recipe_category}', '${recipe_ingredients}', '${recipe_instructions}', '${recipe_image}')`);
+// }
+// exports.addNewFamilyRecipe = addNewFamilyRecipe;
 
