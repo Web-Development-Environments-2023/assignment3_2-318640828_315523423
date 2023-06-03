@@ -1,5 +1,6 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
+const DButils = require("./DButils");
 
 
 
@@ -17,29 +18,61 @@ async function getRecipeInformation(recipe_id) {
         }
     });
 }
+exports.getRecipeInformation = getRecipeInformation;
 
 
 
 async function getRecipeDetails(recipe_id) {
-    let recipe_info = await getRecipeInformation(recipe_id);
-    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
-
-    return {
-        id: id,
-        title: title,
-        readyInMinutes: readyInMinutes,
-        image: image,
-        popularity: aggregateLikes,
-        vegan: vegan,
-        vegetarian: vegetarian,
-        glutenFree: glutenFree,
-        
+    try {
+      const recipeDetails = [];
+  
+      for (const oneId of recipe_id) {
+        const recipeInfo = await getRecipeInformation(oneId);
+        const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipeInfo.data;
+  
+        recipeDetails.push({
+          id,
+          title,
+          readyInMinutes,
+          image,
+          popularity: aggregateLikes,
+          vegan,
+          vegetarian,
+          glutenFree
+        });
+      }
+  
+      return recipeDetails;
+    } catch (error) {
+      throw error;
     }
-}
-
-
-
+  }
 exports.getRecipeDetails = getRecipeDetails;
 
+
+
+async function getMyRecipeInformation(recipe_id_to_check) {
+    const recipes_info = await DButils.execQuery(`select title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree from recipes where recipe_id='${recipe_id_to_check}'`);
+    return recipes_info;
+}
+exports.getMyRecipeInformation = getMyRecipeInformation;
+
+
+
+async function getMyRecipeDetails(recipe_id) {
+    try {
+      const recipeDetails = [];
+  
+      for (const oneID of recipe_id) {
+        const recipeInfo = await getMyRecipeInformation(oneID);
+        recipeDetails.push(recipeInfo);
+      }
+  
+      return recipeDetails;
+    } catch (error) {
+      throw error;
+    }
+  }
+exports.getMyRecipeDetails = getMyRecipeDetails;
 
 
