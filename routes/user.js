@@ -119,6 +119,28 @@ router.get('/MyFamilyRecipes', async (req,res,next) => {
   }
 });
 
+router.get('last-viewed', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const lastThree = await user_utils.getLast3Watch(user_id);
+    res.status(200).send(lastThree);
+  }
+  catch(error){
+    next(error);
+  }
+});
+
+router.post('/last-viewed', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const { recipe_id } = req.body;
+    await user_utils.UpdateLast3Watched(user_id, recipe_id);
+    res.status(200).send("The Recipe successfully saved in My Recipes");
+  }
+  catch(error){
+    next(error);
+  }
+});
 
 // router.post('/MyFamilyRecipes', async (req,res,next) => {
 //   try{
