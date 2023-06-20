@@ -1,8 +1,13 @@
 
 const DButils = require("./DButils");
 async function markAsFavorite(user_id, recipe_id){
+
+        // const recipe_in_database = await DButils.execQuery(`select recipe_id from recipes where recipe_id='${recipe_id}'`);
+        // if (recipe_in_database.length == 0){
+        //     throw { status: 409, message: "recipe not in database" };
+        // }
      // check if the recipe is already in the favorite list
-        const recipe = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}' and recipe_id in (SELECT recipe_id FROM recipes))`);
+        const recipe = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}' and recipe_id in (SELECT recipe_id FROM recipes)`);
         if (recipe.length != 0){
             throw { status: 409, message: "recipe allready in favorite list" };
         }

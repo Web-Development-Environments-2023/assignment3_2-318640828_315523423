@@ -44,9 +44,6 @@ async function getRecipeDetails(recipe_id) {
   }
 exports.getRecipeDetails = getRecipeDetails;
 
-
-
-
 async function getMyRecipeInformation(recipe_id_to_check) {
     const recipes_info = await DButils.execQuery(`select title, readyInMinutes, image, popularity, vegan, vegetarian, glutenFree from recipes where recipe_id='${recipe_id_to_check}'`);
     return recipes_info;
