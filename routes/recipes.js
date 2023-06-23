@@ -49,19 +49,37 @@ router.get("/", (req, res) => res.send("im here"));
 /**
  * This path returns a full details of a recipe by its id
  */
-router.get("/:recipeId", async (req, res, next) => {
+router.get("/searchById/:recipeId", async (req, res, next) => {
   try {
-    console.log(req.params.recipeId);
+    //console.log(req.params.recipeId);
     recipe_id_array=[req.params.recipeId]
     if (req.params.recipeId.length===0){
       throw { status: 401, message: "missing recipe_id" };
     }
-      
     const recipe = await recipes_utils.getRecipeDetails(recipe_id_array);
     res.send(recipe);
   } catch (error) {
     next(error);
   }
 });
+
+router.get("/random",async(req,res,next)=>{
+  
+  try{
+    // throw { status: 401, message: "missing recipe_id"};
+    const recipes = await recipes_utils.getRandomRecipesInformaition(3);
+    
+    
+    // for (r in recipes.data){
+    //   console.log(r.id);}
+    //throw { status: 401, message: "missing recipe_id"};
+    res.send(recipes);
+  }catch (error) {
+    next(error);
+  }
+  
+} )
+
+
 
 module.exports = router;

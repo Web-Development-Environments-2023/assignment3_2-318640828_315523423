@@ -15,12 +15,47 @@ async function getRecipeInformation(recipe_id) {
 }
 exports.getRecipeInformation = getRecipeInformation;
 
+async function getRandomRecipesInformaition(number){
+  //return (`${api_domain}/random?number=${number}`);
+  const recipes = await axios.get(`${api_domain}/random?number=${number}`, {
+    params: {
+        includeNutrition: false,
+        apiKey: process.env.spooncular_apiKey
+    }
+});
+
+    const recipeObjects = recipes.data.recipes; // Array of recipe objects
+    
+    const recipeDetails = [];
+
+    for (let i = 0; i < recipeObjects.length; i++) {
+      const recipe = recipeObjects[i];
+      // Access recipe details
+      // const recipeId = recipe.id;
+      // const recipeTitle = recipe.title;
+      // const recipeIngredients = recipe.extendedIngredients;
+      // const recipeInstructions = recipe.instructions;
+      recipeDetails.push({
+        id: recipe.id,
+        title: recipe.title,
+        readyInMinutes: recipe.readyInMinutes,
+        image: recipe.image,
+        //popularity: recipe.aggregateLikes,
+        vegan: recipe.vegan,
+        vegetarian: recipe.vegetarian,
+        glutenFree: recipe.glutenFree,
+      });
+
+    }
+    return recipeDetails;
+
+}
+exports.getRandomRecipesInformaition = getRandomRecipesInformaition;
 
 
 async function getRecipeDetails(recipe_id) {
     try {
       const recipeDetails = [];
-  
       for (const oneId of recipe_id) {
         const recipeInfo = await getRecipeInformation(oneId);
         const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipeInfo.data;
@@ -49,7 +84,6 @@ async function getMyRecipeInformation(recipe_id_to_check) {
     return recipes_info;
 }
 exports.getMyRecipeInformation = getMyRecipeInformation;
-
 
 
 async function getMyRecipeDetails(recipe_id) {
