@@ -127,3 +127,33 @@ async function getFamilyRecipeDetails(recipe_id) {
     }
   }
   exports.getFamilyRecipeDetails = getFamilyRecipeDetails;
+
+
+  async function getFullDetails(recipe_id) {
+    try {
+      const recipeDetails = [];
+      // for (const oneId of recipe_id) {
+        const recipeInfo = await getRecipeInformation(recipe_id);
+        const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients,instructions,analyzedInstructions } = recipeInfo.data;
+  
+        recipeDetails.push({
+          id,
+          title,
+          readyInMinutes,
+          image,
+          popularity: aggregateLikes,
+          vegan,
+          vegetarian,
+          glutenFree,
+          extendedIngredients,
+          instructions,
+          analyzedInstructions
+        });
+      //}
+  
+      return recipeDetails;
+    } catch (error) {
+      throw error;
+    }
+  }
+exports.getFullDetails = getFullDetails;

@@ -44,7 +44,17 @@ router.get("/", (req, res) => res.send("im here"));
 //   }
 // });
 
-
+router.get("/fullData/:recipeId", async (req, res, next) => {
+  try {
+    number = req.params.recipeId;
+    console.log(number);
+    const recipe = await recipes_utils.getFullDetails(number);
+    console.log(recipe);
+    res.send(recipe);
+  } catch (error) {
+    next(error);
+  }
+});
 
 /**
  * This path returns a full details of a recipe by its id
@@ -68,8 +78,6 @@ router.get("/random",async(req,res,next)=>{
   try{
     // throw { status: 401, message: "missing recipe_id"};
     const recipes = await recipes_utils.getRandomRecipesInformaition(3);
-    
-    
     // for (r in recipes.data){
     //   console.log(r.id);}
     //throw { status: 401, message: "missing recipe_id"};
