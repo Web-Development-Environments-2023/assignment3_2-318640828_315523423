@@ -27,12 +27,26 @@ router.post('/favorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipeId;
+    console.log("this:",recipe_id);
     await user_utils.markAsFavorite(user_id,recipe_id);
     res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
     next(error);
   }
-})
+});
+
+router.get('/isfavorites', async (req,res,next) => {
+  try{
+    const user_id = req.session.user_id;
+    const recipe_id = req.body.recipeId;
+    console.log("this:",recipe_id);
+    const results = await user_utils.ismarkAsFavorite(user_id,recipe_id);
+    res.status(200).send(results);
+    } catch(error){
+    next(error);
+  }
+});
+
 /**
  * This path returns the favorites recipes that were saved by the logged-in user
  */

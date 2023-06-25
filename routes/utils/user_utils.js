@@ -7,20 +7,30 @@ async function markAsFavorite(user_id, recipe_id){
         //     throw { status: 409, message: "recipe not in database" };
         // }
      // check if the recipe is already in the favorite list
-        const recipe = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}' and recipe_id in (SELECT recipe_id FROM recipes)`);
+        const recipe = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}' AND  recipe_id='${recipe_id}' `); // and recipe_id in (SELECT recipe_id FROM recipes)
+        console.log(recipe);
         if (recipe.length != 0){
             throw { status: 409, message: "recipe allready in favorite list" };
         }
     // add the new recipe
     await DButils.execQuery(`insert into favoriterecipes values ('${user_id}',${recipe_id})`);
 }
+exports.markAsFavorite = markAsFavorite;
+
+async function ismarkAsFavorite(user_id, recipe_id){
+
+    const recipe = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}' AND recipe_id='${recipe_id}' `); // and recipe_id in (SELECT recipe_id FROM recipes)
+    console.log(recipe.length);
+    return recipe
+}
+exports.ismarkAsFavorite = ismarkAsFavorite;
+
 async function getFavoriteRecipes(user_id){
     const recipes_id = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}'`);
     return recipes_id;
 }
 
 
-exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 
 //  ADDING A NEW MY RECIPE
