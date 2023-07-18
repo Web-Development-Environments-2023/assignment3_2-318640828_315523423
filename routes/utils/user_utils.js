@@ -21,7 +21,10 @@ async function ismarkAsFavorite(user_id, recipe_id){
 
     const recipe = await DButils.execQuery(`select recipe_id from favoriterecipes where user_id='${user_id}' AND recipe_id='${recipe_id}' `); // and recipe_id in (SELECT recipe_id FROM recipes)
     console.log(recipe.length);
-    return recipe
+    if (recipe.length == 0){
+        return false;
+    }
+    return true
 }
 exports.ismarkAsFavorite = ismarkAsFavorite;
 
@@ -65,57 +68,65 @@ exports.getMyFamilyRecipes = getMyFamilyRecipes;
 // }
 // exports.addNewFamilyRecipe = addNewFamilyRecipe;
 async function getLast3Watch(user_id){
-    const lastThree = await DButils.execQuery(`select H_W_R1,H_W_R1,H_W_R1 from watched where user_id='${user_id}'`);
-    return lastThree.map((row) => {
-        const {
-            History_Watch_R1,
-            History_Watch_R2,
-            History_Watch_R3
-        } = row;
-        return {
-            History_Watch_1: History_Watch_R1,
-            History_Watch_2: History_Watch_R2,
-            History_Watch_3: History_Watch_R3
-        }
-})
+    
+    const recipes = await DButils.execQuery(`SELECT R1, R2, R3 FROM watched WHERE user_id='${user_id}'`);
+
+    return recipes;
 }
 exports.getLast3Watch = getLast3Watch;
 
 //TODO: need to change names of variables and create a table named watched
 async function UpdateLast3Watched(user_id, recipe_id) {
-    const last_3_ans = await DButils.execQuery(`select * from user_last_3_watch where user_id='${user_id}'`);
+    const last_3_ans = await DButils.execQuery(`select * from watched where user_id='${user_id}'`);
     if (last_3_ans.length === 0) {
-        const History_Watch_R1 = recipe_id;
-        const History_Watch_R2 = 0;
-        const History_Watch_R3 = 0;
-        await DButils.execQuery(`insert into user_last_3_watch (user_id,History_Watch_R1,History_Watch_R2,History_Watch_R3) VALUES ('${user_id}', '${History_Watch_R1}', '${History_Watch_R2}','${History_Watch_R3}')`);
+        const user_id = user_id;
+        const R1 = recipe_id;
+        const flag = 2;
+        await DButils.execQuery(`insert into watched (user_id,R1,R2,R3,flag) VALUES ('${user_id}', '${R1}', '${R2}','${R3}','${flag}')`);
     }
-    else if (last_3_ans.length === 1)
-    {
-        const History_Watch_R1 = last_3_ans[0].History_Watch_R1;
-        const History_Watch_R2 = recipe_id;
-        const History_Watch_R3 = 0;
-        await DButils.execQuery(`insert into user_last_3_watch (user_id,History_Watch_R1,History_Watch_R2,History_Watch_R3) VALUES ('${user_id}', '${History_Watch_R1}', '${History_Watch_R2}','${History_Watch_R3}')`);
-    }
-    else if(last_3_ans.length === 2)
-    {
-        const History_Watch_R1 = last_3_ans[0].History_Watch_R1;
-        const History_Watch_R2 = last_3_ans[0].History_Watch_R2;
-        const History_Watch_R3 = recipe_id;
-        await DButils.execQuery(`insert into user_last_3_watch (user_id,History_Watch_R1,History_Watch_R2,History_Watch_R3) VALUES ('${user_id}', '${History_Watch_R1}', '${History_Watch_R2}','${History_Watch_R3}')`);
-    }
-    else {
-        //let results=Object.values(JSON.parse(JSON.stringify(DB_ans)));
-        let History_Watch_R1 = last_3_ans[0].History_Watch_R1;
-        let History_Watch_R2 = last_3_ans[0].History_Watch_R2;
-        let History_Watch_R3
-        History_Watch_R3 = History_Watch_R2;
-        History_Watch_R2 = History_Watch_R1;
-        History_Watch_R1 = recipe_id;
-        console.log(History_Watch_R1);
-        console.log(History_Watch_R2);
-        console.log(History_Watch_R3);
-        await DButils.execQuery(`update user_last_3_watch set History_Watch_R1='${History_Watch_R1}',History_Watch_R2='${History_Watch_R2}',History_Watch_R3='${History_Watch_R3}' where user_id='${user_id}'`);
-    }
+    else{
+        if (last_3_ans[0].flag === 1) {
+            const R1 = recipe_id;
+            const flag = 2;
+            await DButils.execQuery(`UPDATE watched SET R1='${R1}', flag='${flag}'`);
+        }
+        else if (last_3_ans[0].flag === 2) {
+            const R2 = recipe_id;
+            const flag = 3;
+            await DButils.execQuery(`UPDATE watched SET R2='${R2}', flag='${flag}'`);
+        }
+        else if (last_3_ans[0].flag === 3) {
+            const R3 = recipe_id;
+            const flag = 1;
+            await DButils.execQuery(`UPDATE watched SET R3='${R3}', flag='${flag}'`);
+        }
+    } 
+    // if (last_3_ans.length === 1)
+    // {
+    //     const History_Watch_R1 = last_3_ans[0].History_Watch_R1;
+    //     const History_Watch_R2 = recipe_id;
+    //     const History_Watch_R3 = 0;
+    //     await DButils.execQuery(`insert into user_last_3_watch (user_id,History_Watch_R1,History_Watch_R2,History_Watch_R3) VALUES ('${user_id}', '${History_Watch_R1}', '${History_Watch_R2}','${History_Watch_R3}')`);
+    // }
+    // else if(last_3_ans.length === 2)
+    // {
+    //     const History_Watch_R1 = last_3_ans[0].History_Watch_R1;
+    //     const History_Watch_R2 = last_3_ans[0].History_Watch_R2;
+    //     const History_Watch_R3 = recipe_id;
+    //     await DButils.execQuery(`insert into user_last_3_watch (user_id,History_Watch_R1,History_Watch_R2,History_Watch_R3) VALUES ('${user_id}', '${History_Watch_R1}', '${History_Watch_R2}','${History_Watch_R3}')`);
+    // }
+    // else {
+    //     //let results=Object.values(JSON.parse(JSON.stringify(DB_ans)));
+    //     let History_Watch_R1 = last_3_ans[0].History_Watch_R1;
+    //     let History_Watch_R2 = last_3_ans[0].History_Watch_R2;
+    //     let History_Watch_R3
+    //     History_Watch_R3 = History_Watch_R2;
+    //     History_Watch_R2 = History_Watch_R1;
+    //     History_Watch_R1 = recipe_id;
+    //     console.log(History_Watch_R1);
+    //     console.log(History_Watch_R2);
+    //     console.log(History_Watch_R3);
+    //     await DButils.execQuery(`update user_last_3_watch set History_Watch_R1='${History_Watch_R1}',History_Watch_R2='${History_Watch_R2}',History_Watch_R3='${History_Watch_R3}' where user_id='${user_id}'`);
+    // }
 }
 exports.UpdateLast3Watched = UpdateLast3Watched;
