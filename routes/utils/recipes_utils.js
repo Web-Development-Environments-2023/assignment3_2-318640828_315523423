@@ -6,12 +6,13 @@ const DButils = require("./DButils");
  * @param {*} recipes_info 
  */
 async function getRecipeInformation(recipe_id) {
-    return await axios.get(`${api_domain}/${recipe_id}/information`, {
+    const response =  await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
             includeNutrition: false,
             apiKey: process.env.spooncular_apiKey
         }
     });
+    return response.data;
 }
 exports.getRecipeInformation = getRecipeInformation;
 
@@ -157,3 +158,122 @@ async function getFamilyRecipeDetails(recipe_id) {
     }
   }
 exports.getFullDetails = getFullDetails;
+
+
+
+// -------- need to change a little bit --------
+
+
+async function getRecipePreviewDetails(recipeId) {
+  const recipeInfo = await getRecipeInformation(recipeId);
+  const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, isSeen, isFavorite, summary } = recipeInfo;
+
+  return {
+      recipe_id: id,
+      title: title,
+      ready_in_minutes: readyInMinutes,
+      image: image,
+      aggregate_likes: aggregateLikes,
+      vegan: vegan,
+      vegetarian: vegetarian,
+      gluten_free: glutenFree,
+      is_seen: isSeen,
+      is_favorite: isFavorite,
+      summary: summary ? summary : "No summary available"}
+}
+
+async function getRecipesPreview(recipesIdArray) {
+  let previewsArray = [];
+  for(let recipeId of recipesIdArray){
+      previewsArray.push(await getRecipePreviewDetails(recipeId));
+  }
+
+  return previewsArray;
+}
+
+
+async function searchRecipes(que) {
+  const param = {
+    query: que,
+    // cuisine: query.cuisine,
+    // diet: query.diet,
+    // intolerances: query.intolerance,
+    number: 10,
+    apiKey: process.env.spooncular_apiKey
+  }
+  const response = await axios.get(`${api_domain}/complexSearch?query=${param.query}&number=${param.number}&apiKey=${param.apiKey}`);
+  console.log(response.data.results);
+return getRecipesPreview(response.data.results.map((element) => element.id));
+
+  // const param = {
+  //   query: query,
+  //   number: 10,
+  //   apiKey: process.env.spooncular_apiKey }
+  const recipes_info = await axios.get(`${api_domain}/complexSearch?query=${param.query}&number=${param.number}&apiKey=${param.apiKey}`);
+  // const recipes_info = await axios.get(`${api_domain}/complexSearch`, {
+  //     params: {
+  //         query: query,
+  //         number: 10,
+  //         apiKey: process.env.spooncular_apiKey
+  //     }
+  // });
+  const recipes = recipes_info.data.results;
+  const recipes_preview = [];
+  recipes.forEach((recipe_info) => {
+      recipes_preview.push({
+          id: recipe_info.id,
+          title: recipe_info.title,
+          readyInMinutes: recipe_info.readyInMinutes,
+          image: recipe_info.image,
+          popularity: recipe_info.aggregateLikes,
+          vegan: recipe_info.vegan,
+          vegetarian: recipe_info.vegetarian,
+          glutenFree: recipe_info.glutenFree,
+      });
+  });
+  return recipes_preview;
+}
+exports.searchRecipes = searchRecipes;
+
+// async function searchRecipes(query) {
+//   console.log(query);
+//   const recipes_info = await axios.get(`${api_domain}/complexSearch`, {
+//       params: {
+//           query: query,
+//           number: 10,
+//           // instructionsRequired: true,
+//           // apiKey: process.env.spooncular_apiKey
+//           includeNutrition: false,
+//           apiKey: process.env.spooncular_apiKey
+//       }
+//   });
+//   const recipes_preview = recipes_info.data.results;
+//   // const recipes_preview = [];
+//   // const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipes;
+
+//   // recipes_preview.push({
+//   //   id,
+//   //   title,
+//   //   readyInMinutes,
+//   //   image,
+//   //   popularity: aggregateLikes,
+//   //   vegan,
+//   //   vegetarian,
+//   //   glutenFree
+//   // });
+  
+//   // recipes.forEach((recipe_info) => {
+//   //     recipes_preview.push({
+//   //         id: recipe_info.id,
+//   //         title: recipe_info.title,
+//   //         readyInMinutes: recipe_info.readyInMinutes,
+//   //         image: recipe_info.image,
+//   //         popularity: recipe_info.aggregateLikes,
+//   //         vegan: recipe_info.vegan,
+//   //         vegetarian: recipe_info.vegetarian,
+//   //         glutenFree: recipe_info.glutenFree,
+//   //     });
+//   // });
+//   return recipes_preview;
+// }
+exports.searchRecipes = searchRecipes;

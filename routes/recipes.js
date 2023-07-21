@@ -43,6 +43,19 @@ router.get("/", (req, res) => res.send("im here"));
 //     next(error);
 //   }
 // });
+router.get("/search/:query", async (req, res, next) => {
+  try {
+    //console.log(req.params.query);
+    if (req.params.query.length===0){
+      throw { status: 401, message: "missing query" };
+    }
+    console.log(req.params.query)
+    const recipes = await recipes_utils.searchRecipes(req.params.query);
+    res.send(recipes);
+  } catch (error) {
+    next(error);
+  }
+});
 
 router.get("/fullData/:recipeId", async (req, res, next) => {
   try {
