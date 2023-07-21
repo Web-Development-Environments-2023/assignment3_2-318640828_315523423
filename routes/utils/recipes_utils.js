@@ -107,7 +107,7 @@ exports.getMyRecipeDetails = getMyRecipeDetails;
 
 
 async function getFamilyInformation(recipe_id_to_check) {
-    const recipes_info = await DButils.execQuery(`select recipe_id, owner, cookingTime, ingridients, instructions from myfamilyrecipes where recipe_id='${recipe_id_to_check}'`);
+    const recipes_info = await DButils.execQuery(`select recipe_id, owner, cookingTime, ingridients, instructions, image from myfamilyrecipes where recipe_id='${recipe_id_to_check}'`);
     return recipes_info;
 }
 exports.getFamilyInformation = getFamilyInformation;

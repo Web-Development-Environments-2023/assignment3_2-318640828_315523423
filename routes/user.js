@@ -35,13 +35,15 @@ router.post('/favorites', async (req,res,next) => {
   }
 });
 
-router.get('/isfavorites', async (req,res,next) => {
+router.post('/isfavorites', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const recipe_id = req.body.recipeId;
     console.log("this:",recipe_id);
     const results = await user_utils.ismarkAsFavorite(user_id,recipe_id);
+  
     res.status(200).send(results);
+
     } catch(error){
     next(error);
   }
@@ -127,7 +129,7 @@ router.get('/MyFamilyRecipes', async (req,res,next) => {
     let recipes_id_array = [];
     recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
     const results = await recipe_utils.getFamilyRecipeDetails(recipes_id_array);
-    console.log(results);
+    //console.log(results);
     res.status(200).send(results);
   }
   catch(error){
@@ -135,23 +137,28 @@ router.get('/MyFamilyRecipes', async (req,res,next) => {
   }
 });
 
-router.get('last-viewed', async (req,res,next) => {
+router.get('/lastViewed', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
     const lastThree = await user_utils.getLast3Watch(user_id);
-    res.status(200).send(lastThree);
+    const valuesArray = lastThree.map(obj => Object.values(obj));
+    const nonNullValuesArray = valuesArray.map(values => values.filter(value => value !== null));
+    const results = await recipe_utils.getRecipeDetails(nonNullValuesArray[0]);
+    res.status(200).send(results);
   }
   catch(error){
     next(error);
   }
 });
 
-router.post('/last-viewed', async (req,res,next) => {
+router.post('/lastViewed', async (req,res,next) => {
   try{
     const user_id = req.session.user_id;
-    const { recipe_id } = req.body;
+    const recipe_id = req.body.recipeId;
+    console.log(recipe_id);
+    console.log(user_id);
     await user_utils.UpdateLast3Watched(user_id, recipe_id);
-    res.status(200).send("The Recipe successfully saved in My Recipes");
+    res.status(200).send("The Recipe successfully lastviewd Recipes");
   }
   catch(error){
     next(error);
