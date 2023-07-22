@@ -6,7 +6,7 @@ const DButils = require("./DButils");
  * @param {*} recipes_info 
  */
 async function getRecipeInformation(recipe_id) {
-    const response =  await axios.get(`${api_domain}/${recipe_id}/information`, {
+  const response =  await axios.get(`${api_domain}/${recipe_id}/information`, {
         params: {
             includeNutrition: false,
             apiKey: process.env.spooncular_apiKey
@@ -59,7 +59,7 @@ async function getRecipeDetails(recipe_id) {
       const recipeDetails = [];
       for (const oneId of recipe_id) {
         const recipeInfo = await getRecipeInformation(oneId);
-        const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipeInfo.data;
+        const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipeInfo;
   
         recipeDetails.push({
           id,
@@ -135,7 +135,7 @@ async function getFamilyRecipeDetails(recipe_id) {
       const recipeDetails = [];
       // for (const oneId of recipe_id) {
         const recipeInfo = await getRecipeInformation(recipe_id);
-        const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients,instructions,analyzedInstructions } = recipeInfo.data;
+        const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, extendedIngredients,instructions,analyzedInstructions } = recipeInfo;
   
         recipeDetails.push({
           id,
@@ -169,7 +169,7 @@ async function getRecipePreviewDetails(recipeId) {
   const { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree, isSeen, isFavorite, summary } = recipeInfo;
 
   return {
-      recipe_id: id,
+      id: id,
       title: title,
       ready_in_minutes: readyInMinutes,
       image: image,
@@ -198,7 +198,7 @@ async function searchRecipes(que) {
     // cuisine: query.cuisine,
     // diet: query.diet,
     // intolerances: query.intolerance,
-    number: 10,
+    number: 2,
     apiKey: process.env.spooncular_apiKey
   }
   const response = await axios.get(`${api_domain}/complexSearch?query=${param.query}&number=${param.number}&apiKey=${param.apiKey}`);
@@ -276,4 +276,4 @@ exports.searchRecipes = searchRecipes;
 //   // });
 //   return recipes_preview;
 // }
-exports.searchRecipes = searchRecipes;
+//exports.searchRecipes = searchRecipes;
