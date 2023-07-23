@@ -138,16 +138,14 @@ router.get('/MyFamilyRecipes', async (req,res,next) => {
 
 router.get('/lastViewed', async (req,res,next) => {
   try{
+    let results = [];
     const user_id = req.session.user_id;
     console.log("this is userID",user_id);
     const lastThree = await user_utils.getLast3Watch(user_id);
     const valuesArray = lastThree.map(obj => Object.values(obj));
     const nonNullValuesArray = valuesArray.map(values => values.filter(value => value !== null));
-    if (nonNullValuesArray.length == 0){
-      results = [];
-    }
-    else{
-      const results = await recipe_utils.getRecipeDetails(nonNullValuesArray[0]);}
+    if (nonNullValuesArray.length !== 0){
+      results = await recipe_utils.getRecipeDetails(nonNullValuesArray[0]);}
     res.status(200).send(results);
   }
   catch(error){

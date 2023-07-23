@@ -98,7 +98,7 @@ router.get("/random",async(req,res,next)=>{
   
   try{
     // throw { status: 401, message: "missing recipe_id"};
-    const recipes = await recipes_utils.getRandomRecipesInformaition(2);
+    const recipes = await recipes_utils.getRandomRecipesInformaition(3);
     // for (r in recipes.data){
     //   console.log(r.id);}
     //throw { status: 401, message: "missing recipe_id"};

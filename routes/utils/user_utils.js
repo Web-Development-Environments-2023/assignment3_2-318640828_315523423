@@ -68,10 +68,8 @@ exports.getMyFamilyRecipes = getMyFamilyRecipes;
 // }
 // exports.addNewFamilyRecipe = addNewFamilyRecipe;
 async function getLast3Watch(user_id){
-    
-    const recipes = await DButils.execQuery(`SELECT R1, R2, R3 FROM watched WHERE user_id='${user_id}'`);
-
-    return recipes;
+    console.log("this is userID in get",user_id);
+    return recipes = await DButils.execQuery(`SELECT R1, R2, R3 FROM watched WHERE user_id='${user_id}'`);
 }
 exports.getLast3Watch = getLast3Watch;
 
@@ -79,10 +77,9 @@ exports.getLast3Watch = getLast3Watch;
 async function UpdateLast3Watched(user_id, recipe_id) {
     const last_3_ans = await DButils.execQuery(`select * from watched where user_id='${user_id}'`);
     if (last_3_ans.length === 0) {
-        const user_id = user_id;
-        const R1 = recipe_id;
-        const flag = 2;
-        await DButils.execQuery(`insert into watched (user_id,R1,R2,R3,flag) VALUES ('${user_id}', '${R1}', '${R2}','${R3}','${flag}')`);
+        let R1 = recipe_id;
+        let  flag = 2;
+        await DButils.execQuery(`insert into watched (user_id,R1,flag) VALUES ('${user_id}', '${R1}', '${flag}')`);
     }
     else{
         if (last_3_ans[0].flag === 1) {
