@@ -192,17 +192,25 @@ async function getRecipesPreview(recipesIdArray) {
 }
 
 
-async function searchRecipes(que) {
+async function searchRecipes(que,num=5, cuisine=null, diet=null, intolerances=null) {
+  let filter="";
   const param = {
     query: que,
-    // cuisine: query.cuisine,
-    // diet: query.diet,
-    // intolerances: query.intolerance,
-    number: 2,
+    cuisine: cuisine,
+    diet: diet,
+    intolerance: intolerances,
+    number: num,
+
     apiKey: process.env.spooncular_apiKey
   }
-  const response = await axios.get(`${api_domain}/complexSearch?query=${param.query}&number=${param.number}&apiKey=${param.apiKey}`);
-  console.log(response.data.results);
+  if (param.cuisine !== null) {filter += `&cuisine=${param.cuisine}`}
+  if (param.diet !== null) {filter += `&diet=${param.diet}`}
+  if (param.intolerance !== null) {filter += `&intolerances=${param.intolerance}`}
+  
+  console.log(param);
+  console.log(`${api_domain}/complexSearch?query=${param.query}&number=${param.number}${filter}&apiKey=${param.apiKey}`);
+  const response = await axios.get(`${api_domain}/complexSearch?query=${param.query}&number=${param.number}${filter}&apiKey=${param.apiKey}`);
+  console.log(response.data);
 return getRecipesPreview(response.data.results.map((element) => element.id));
 
   // const param = {

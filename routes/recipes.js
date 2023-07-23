@@ -43,14 +43,22 @@ router.get("/", (req, res) => res.send("im here"));
 //     next(error);
 //   }
 // });
-router.get("/search/:query", async (req, res, next) => {
+router.get("/search/:query/:number/:cuisine/:diets/:intolerances", async (req, res, next) => {
   try {
-    //console.log(req.params.query);
+    
     if (req.params.query.length===0){
       throw { status: 401, message: "missing query" };
     }
     console.log(req.params.query)
-    const recipes = await recipes_utils.searchRecipes(req.params.query);
+    const query =req.params.query;
+    const num = parseInt(req.params.number) || 5;
+    let cuisine = req.params.cuisine;
+    if (cuisine.includes("None")){cuisine = null}
+    let diet = req.params.diets;
+    if (diet.includes("None")){diet = null}
+    let intolerances = req.params.intolerances;
+    if (intolerances.includes("None")){intolerances = null}
+    const recipes = await recipes_utils.searchRecipes(query, num, cuisine, diet, intolerances);
     res.send(recipes);
   } catch (error) {
     next(error);
@@ -90,7 +98,7 @@ router.get("/random",async(req,res,next)=>{
   
   try{
     // throw { status: 401, message: "missing recipe_id"};
-    const recipes = await recipes_utils.getRandomRecipesInformaition(3);
+    const recipes = await recipes_utils.getRandomRecipesInformaition(2);
     // for (r in recipes.data){
     //   console.log(r.id);}
     //throw { status: 401, message: "missing recipe_id"};
